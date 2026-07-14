@@ -31,3 +31,4 @@ server/com.google.code.AccountsSSO.SingleSignOn.service
 server/com.nokia.SingleSignOn.Backup.service
 signon-*.tar.bz2
 tests/com.google.code.AccountsSSO.SingleSignOn.service
+.ccls-cache
