@@ -35,6 +35,8 @@
 #include "SignOn/authpluginif.h"
 #include "SignOn/signonerror.h"
 
+#include <QSet>
+
 #define MAX_IDLE_TIME SIGNOND_MAX_IDLE_TIME
 /*
  * the watchdog searches for idle sessions with period of half of idle timeout
@@ -216,8 +218,9 @@ SignonSessionCore::queryAvailableMechanisms(const QStringList &wantedMechanisms)
     if (!wantedMechanisms.size())
         return m_plugin->mechanisms();
 
-    return m_plugin->mechanisms().toSet().
-        intersect(wantedMechanisms.toSet()).toList();
+    QSet<QString> pluginMechanisms(m_plugin->mechanisms().cbegin(), m_plugin->mechanisms().cend());
+    const QSet<QString> requestedMechanisms(wantedMechanisms.cbegin(), wantedMechanisms.cend());
+    return pluginMechanisms.intersect(requestedMechanisms).values();
 }
 
 void SignonSessionCore::process(const PeerContext &peerContext,

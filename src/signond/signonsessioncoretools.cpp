@@ -42,7 +42,8 @@ QVariantMap SignonDaemonNS::mergeVariantMaps(const QVariantMap &map1,
         if (map.contains(it.key()))
             map.remove(it.key());
     }
-    return map.unite(map2);
+    map.insert(map2);
+    return map;
 }
 
 /* --------------------- StoreOperation ---------------------- */

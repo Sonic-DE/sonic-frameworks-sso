@@ -39,7 +39,6 @@
 
 QT_BEGIN_NAMESPACE
 class QString;
-class QStringList;
 class QByteArray;
 class QVariant;
 QT_END_NAMESPACE
@@ -73,7 +72,7 @@ enum AuthPluginState {
         }
 
 #define SIGNON_DECL_AUTH_PLUGIN(pluginclass) \
-        Q_EXTERN_C AuthPluginInterface *auth_plugin_instance() \
+        extern "C" Q_DECL_EXPORT AuthPluginInterface *auth_plugin_instance() \
         SIGNON_PLUGIN_INSTANCE(pluginclass)
 
 /*!

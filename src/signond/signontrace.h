@@ -31,6 +31,7 @@
 #include <QDateTime>
 
 #include "signond-common.h"
+#include "../../lib/signond/SignOn/debug.h"
 
 namespace SignOn {
 
@@ -66,9 +67,9 @@ public:
         if (!m_pInstance)
             return;
 
-        if (!criticalsEnabled()) {
+        if (!SignOn::criticalsEnabled()) {
             if (type <= QtCriticalMsg) return;
-        } else if (!debugEnabled()) {
+        } else if (!SignOn::debugEnabled()) {
             if (type <= QtDebugMsg) return;
         }
 

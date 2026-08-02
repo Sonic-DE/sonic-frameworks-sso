@@ -29,6 +29,16 @@ SIGNON_EXPORT int signonLoggingLevel = 1; // criticals
 
 namespace SignOn {
 
+bool debugEnabled()
+{
+    return signonLoggingLevel >= 2;
+}
+
+bool criticalsEnabled()
+{
+    return signonLoggingLevel >= 1;
+}
+
 SIGNON_EXPORT void setLoggingLevel(int level)
 {
     signonLoggingLevel = level;

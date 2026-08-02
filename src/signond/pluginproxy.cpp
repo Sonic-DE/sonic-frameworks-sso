@@ -46,6 +46,7 @@
 // signon-plugins-common
 #include "SignOn/blobiohandler.h"
 #include "SignOn/ipc.h"
+#include "../../lib/signond/SignOn/debug.h"
 
 using namespace SignOn;
 
@@ -82,8 +83,8 @@ PluginProxy::PluginProxy(QString type, QObject *parent):
     m_process = new PluginProcess(this);
 
 #ifdef SIGNOND_TRACE
-    if (criticalsEnabled()) {
-        const char *level = debugEnabled() ? "2" : "1";
+    if (SignOn::criticalsEnabled()) {
+        const char *level = SignOn::debugEnabled() ? "2" : "1";
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         env.insert(QLatin1String("SSO_DEBUG"), QLatin1String(level));
         m_process->setProcessEnvironment(env);
@@ -125,10 +126,10 @@ PluginProxy::~PluginProxy()
 
             if (!m_process->waitForFinished(PLUGINPROCESS_STOP_TIMEOUT))
             {
-                if (m_process->pid()) {
+                if (m_process->processId()) {
                     qCritical() << "The signon plugin seems to ignore kill(), "
                         "killing it from command line";
-                    QString killProcessCommand(QString::fromLatin1("kill -9 %1").arg(m_process->pid()));
+                    QString killProcessCommand(QString::fromLatin1("kill -9 %1").arg(m_process->processId()));
                     QProcess::execute(killProcessCommand);
                 }
             }
@@ -157,7 +158,7 @@ PluginProxy* PluginProxy::createNewPluginProxy(const QString &type)
         return NULL;
     }
 
-    if (debugEnabled()) {
+    if (SignOn::debugEnabled()) {
         QString pluginType = pp->queryType();
         if (pluginType != pp->m_type) {
             BLAME() << QString::fromLatin1("Plugin returned type '%1', "

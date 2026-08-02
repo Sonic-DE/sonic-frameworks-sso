@@ -65,6 +65,8 @@
 
 namespace SignOn {
 
+bool debugEnabled();
+bool criticalsEnabled();
 void setLoggingLevel(int level);
 
 }
