@@ -1,3 +1,0 @@
-[submodule "lib/signond/interfaces"]
-	path = lib/signond/interfaces
-	url = https://gitlab.com/accounts-sso/signon-dbus-specification.git
