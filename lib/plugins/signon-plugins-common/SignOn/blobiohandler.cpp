@@ -64,7 +64,8 @@ bool BlobIOHandler::sendData(const QVariantMap &map)
 
     QDataStream stream(m_writeChannel);
     QByteArray ba = variantMapToByteArray(map);
-    stream << ba.size();
+    // Keep the wire length 32-bit; QByteArray::size() is 64-bit in Qt 6.
+    stream << static_cast<int>(ba.size());
 
     QVector<QByteArray> pages = pageByteArray(ba);
     for (int i = 0; i < pages.count(); ++i)

@@ -63,17 +63,17 @@ SignonDaemonAdaptor::registerObject(const QDBusConnection &connection,
     return QDBusObjectPath(path);
 }
 
-void SignonDaemonAdaptor::registerNewIdentity(const QString &applicationContext,
-                                              QDBusObjectPath &objectPath)
+QDBusObjectPath SignonDaemonAdaptor::registerNewIdentity(const QString &applicationContext)
 {
     Q_UNUSED(applicationContext);
 
     SignonIdentity *identity = m_parent->registerNewIdentity();
 
     QDBusConnection dbusConnection(parentDBusContext().connection());
-    objectPath = registerObject(dbusConnection, identity);
+    QDBusObjectPath objectPath = registerObject(dbusConnection, identity);
 
     SignonDisposable::destroyUnused();
+    return objectPath;
 }
 
 void SignonDaemonAdaptor::securityErrorReply()

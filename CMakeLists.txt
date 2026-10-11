@@ -43,7 +43,8 @@ target_compile_definitions(signon-qt6 PRIVATE QT_NO_CAST_TO_ASCII QT_NO_CAST_FRO
 target_include_directories(signon-qt6 PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/SignOn>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/signon-qt6>)
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/signon-qt6>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/signon-qt6/SignOn>)
 target_link_libraries(signon-qt6 PUBLIC Qt6::Core Qt6::DBus)
 
 install(TARGETS signon-qt6 EXPORT SignOnQt6Targets

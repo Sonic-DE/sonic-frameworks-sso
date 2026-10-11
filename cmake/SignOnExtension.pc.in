@@ -1,0 +1,12 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+plugindir=${libdir}/signond/extensions
+
+Name: SignOnExtension
+Description: SignOn extension development
+Version: @PROJECT_VERSION@
+Requires: Qt6Core Qt6DBus
+Libs: -L${libdir} -lsignon-extension
+Cflags: -I${includedir}/signon-extension -I${includedir}/signon-extension/SignOn

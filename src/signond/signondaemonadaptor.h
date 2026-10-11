@@ -49,8 +49,7 @@ public:
         { return *static_cast<QDBusContext *>(m_parent); }
 
 public Q_SLOTS:
-    void registerNewIdentity(const QString &applicationContext,
-                             QDBusObjectPath &objectPath);
+    QDBusObjectPath registerNewIdentity(const QString &applicationContext);
     void getIdentity(const quint32 id, const QString &applicationContext,
                      QDBusObjectPath &objectPath,
                      QVariantMap &identityData);

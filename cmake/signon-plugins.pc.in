@@ -1,0 +1,13 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+plugin_includedir=${includedir}/signon-plugins/SignOn
+plugindir=${libdir}/signond
+
+Name: signon-plugins
+Description: SignOn authentication plugin interface
+Version: @PROJECT_VERSION@
+Requires: libsignon-qt6 Qt6Core
+Libs: -L${libdir} -lsignon-plugins
+Cflags: -I${includedir}/signon-plugins -I${plugin_includedir}
