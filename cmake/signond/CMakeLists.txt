@@ -15,6 +15,18 @@ target_compile_definitions(signon-extension PRIVATE BUILDING_SIGNON SIGNON_ENABL
 target_include_directories(signon-extension PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/signond ${extension_dir})
 target_link_libraries(signon-extension PUBLIC Qt6::Core Qt6::DBus)
 
+set(plugins_dir ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/plugins/SignOn)
+add_library(signon-plugins SHARED
+    ${plugins_dir}/authpluginif.h
+    ${plugins_dir}/uisessiondata.h
+    ${plugins_dir}/uisessiondata_priv.h)
+set_target_properties(signon-plugins PROPERTIES VERSION 1.0.0 SOVERSION 1)
+target_include_directories(signon-plugins PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../lib/plugins>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/signon-plugins>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/signon-plugins/SignOn>)
+target_link_libraries(signon-plugins PUBLIC signon-qt6 Qt6::Core)
+
 set(plugins_common_dir ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/plugins/signon-plugins-common/SignOn)
 add_library(signon-plugins-common SHARED ${plugins_common_dir}/blobiohandler.cpp)
 set_target_properties(signon-plugins-common PROPERTIES VERSION 0.4 SOVERSION 0)
@@ -23,7 +35,7 @@ target_include_directories(signon-plugins-common PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/plugins
     ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/plugins/signon-plugins-common)
 target_compile_definitions(signon-plugins-common PRIVATE SIGNON_PLUGIN_TRACE)
-target_link_libraries(signon-plugins-common PUBLIC Qt6::Core Qt6::DBus)
+target_link_libraries(signon-plugins-common PUBLIC signon-plugins Qt6::DBus)
 
 set(signond_dir ${CMAKE_CURRENT_SOURCE_DIR}/../../src/signond)
 set(signond_sources
@@ -71,11 +83,47 @@ target_include_directories(passwordplugin PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/plugins/signon-plugins-common)
 target_link_libraries(passwordplugin PRIVATE Qt6::Core signon-plugins-common)
 target_compile_definitions(passwordplugin PRIVATE SIGNON_PLUGIN_TRACE)
-set_target_properties(passwordplugin PROPERTIES PREFIX "")
+
+set(remoteplugin_dir ${CMAKE_CURRENT_SOURCE_DIR}/../../src/remotepluginprocess)
+add_executable(signonpluginprocess
+    ${remoteplugin_dir}/main.cpp
+    ${remoteplugin_dir}/debug.cpp
+    ${remoteplugin_dir}/remotepluginprocess.cpp)
+target_include_directories(signonpluginprocess PRIVATE
+    ${remoteplugin_dir}
+    ${signond_dir}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/plugins/signon-plugins-common)
+target_compile_definitions(signonpluginprocess PRIVATE
+    DEBUG_ENABLED
+    SIGNON_PLUGIN_TRACE
+    SIGNOND_PLUGINS_DIR="${CMAKE_INSTALL_FULL_LIBDIR}/signond")
+target_link_libraries(signonpluginprocess PRIVATE signon-plugins-common Qt6::Network)
 
 install(TARGETS signond RUNTIME DESTINATION ${CMAKE_INSTALL_LIBEXECDIR})
-install(TARGETS signon-extension signon-plugins-common
+install(TARGETS signonpluginprocess RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS signon-extension signon-plugins signon-plugins-common
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES
+    ${plugins_dir}/AuthPluginInterface ${plugins_dir}/authpluginif.h
+    ${plugins_dir}/signonplugincommon.h
+    ${plugins_dir}/UiSessionData ${plugins_dir}/uisessiondata.h
+    ${plugins_dir}/uisessiondata_priv.h ${plugins_common_dir}/blobiohandler.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/signon-plugins/SignOn)
+install(FILES
+    ${extension_dir}/AbstractAccessControlManager ${extension_dir}/abstract-access-control-manager.h
+    ${extension_dir}/AbstractCryptoManager ${extension_dir}/abstract-crypto-manager.h
+    ${extension_dir}/AbstractKeyAuthorizer ${extension_dir}/abstract-key-authorizer.h
+    ${extension_dir}/AbstractKeyManager ${extension_dir}/abstract-key-manager.h
+    ${extension_dir}/AbstractSecretsStorage ${extension_dir}/abstract-secrets-storage.h
+    ${extension_dir}/Debug ${extension_dir}/debug.h ${extension_dir}/export.h
+    ${extension_dir}/ExtensionInterface ${extension_dir}/extension-interface.h
+    ${extension_dir}/KeyHandler ${extension_dir}/key-handler.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/signon-extension/SignOn)
+foreach(package signon-plugins signon-plugins-common SignOnExtension)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../${package}.pc.in ${package}.pc @ONLY)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${package}.pc
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+endforeach()
 install(TARGETS passwordplugin LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/signond)
 install(FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/signond/interfaces/com.google.code.AccountsSSO.SingleSignOn.AuthService.xml

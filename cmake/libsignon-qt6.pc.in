@@ -8,4 +8,4 @@ Description: SignOn Qt6 client library
 Version: @PROJECT_VERSION@
 Libs: -L${libdir} -lsignon-qt6
 Requires: Qt6Core Qt6DBus
-Cflags: -I${includedir}
+Cflags: -I${includedir} -I${includedir}/SignOn

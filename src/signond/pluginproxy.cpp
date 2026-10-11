@@ -100,8 +100,8 @@ PluginProxy::PluginProxy(QString type, QObject *parent):
      */
     connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)),
             this, SLOT(onExit(int, QProcess::ExitStatus)));
-    connect(m_process, SIGNAL(error(QProcess::ProcessError)),
-            this, SLOT(onError(QProcess::ProcessError)));
+    connect(m_process, &PluginProcess::errorOccurred,
+            this, &PluginProxy::onError);
 }
 
 PluginProxy::~PluginProxy()
