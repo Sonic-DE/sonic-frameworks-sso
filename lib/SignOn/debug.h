@@ -43,9 +43,9 @@ static inline bool criticalsEnabled() {
         return libsignon_logging_level >= 1;
 }
 #define TRACE() \
-        if (debugEnabled()) qDebug()
+        if (::debugEnabled()) qDebug()
 #define BLAME() \
-        if (criticalsEnabled()) qCritical()
+        if (::criticalsEnabled()) qCritical()
 
 #else // DEBUG_ENABLED
     #define TRACE() while (0) qDebug()

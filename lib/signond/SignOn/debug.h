@@ -52,9 +52,9 @@
         }
 
         #define TRACE() \
-            if (debugEnabled()) qDebug() << __FILE__ << __LINE__ << __func__
+            if (::debugEnabled()) qDebug() << __FILE__ << __LINE__ << __func__
         #define BLAME() \
-            if (criticalsEnabled()) qCritical() << __FILE__ << __LINE__ << __func__
+            if (::criticalsEnabled()) qCritical() << __FILE__ << __LINE__ << __func__
     #else
         static inline bool debugEnabled() { return false; }
         static inline bool criticalsEnabled() { return false; }
@@ -65,8 +65,8 @@
 
 namespace SignOn {
 
-bool debugEnabled();
-bool criticalsEnabled();
+SIGNON_EXPORT bool debugEnabled();
+SIGNON_EXPORT bool criticalsEnabled();
 void setLoggingLevel(int level);
 
 }
