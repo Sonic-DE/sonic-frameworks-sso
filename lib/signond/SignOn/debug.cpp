@@ -29,12 +29,12 @@ SIGNON_EXPORT int signonLoggingLevel = 1; // criticals
 
 namespace SignOn {
 
-bool debugEnabled()
+SIGNON_EXPORT bool debugEnabled()
 {
     return signonLoggingLevel >= 2;
 }
 
-bool criticalsEnabled()
+SIGNON_EXPORT bool criticalsEnabled()
 {
     return signonLoggingLevel >= 1;
 }
